@@ -33,7 +33,7 @@ export default function BeadRow({ count, offset, color }) {
           className="delica"
           style={{ backgroundColor: bead.color }}
           onClick={() => handleBeadClick(bead.index)}
-        ></div>
+        >{bead.index}</div>
       ))}
     </Box>
   );

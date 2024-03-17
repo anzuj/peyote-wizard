@@ -63,11 +63,19 @@ body {
 .kite-right .delica {
   pointer-events: auto;
 }
-
+/* 
 .kite-container {
   display: flex;
-  /* justify-content: center; */
-}
+
+} */
 .kite-side-container {
   position: relative;
+}
+
+.border{
+  border: 1px solid teal
+}
+
+.relative{
+  position: relative
 }
