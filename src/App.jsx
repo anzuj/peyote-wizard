@@ -10,19 +10,20 @@ import PaletteColor from "./components/PaletteColor";
 import Checkbox from "./components/Checkbox";
 
 export default function App() {
-  const [enableSymmetry, setEnableSymmetry] = useState(true);
-  const [showLabels, setShowLabels] = useState(true);
-  const [instructons, setInstructions] = useState({ 1: "3 x B" });
-  const [currentColor, setCurrentColor] = useState("rgb(21, 139, 128)");
-  const [sideCount, setSideCount] = useState(6);
-
-  const [showPaletteMenu, setShowPaletteMenu] = useState(false);
-  const [palette, setPalette] = useState([
+  const samplePalette = [
     { colorCode: "rgb(19, 20, 20)", label: "A" },
     { colorCode: "rgb(243, 236, 215)", label: "B" },
     { colorCode: "rgb(21, 139, 128)", label: "C" },
     { colorCode: "rgb(124, 81, 143)", label: "D" },
-  ]);
+  ]
+  const [enableSymmetry, setEnableSymmetry] = useState(true);
+  const [showLabels, setShowLabels] = useState(true);
+  const [instructons, setInstructions] = useState({ 1: "3 x B" });
+  const [currentColor, setCurrentColor] = useState( { colorCode: "rgb(21, 139, 128)", label: "C" });
+  const [sideCount, setSideCount] = useState(6);
+
+  const [showPaletteMenu, setShowPaletteMenu] = useState(false);
+  const [palette, setPalette] = useState(samplePalette);
   const addToPalette = (newColor) => {
     setPalette([...palette, newColor]);
   };
@@ -104,7 +105,7 @@ export default function App() {
               palette={palette}
               startCount={sideCount}
               direction={"left"}
-              color={currentColor}
+              color={currentColor.colorCode}
               showLabels={showLabels}
               enableSymmetry={enableSymmetry}
             />
@@ -114,7 +115,7 @@ export default function App() {
               palette={palette}
               startCount={sideCount}
               direction={"right"}
-              color={currentColor}
+              color={currentColor.colorCode}
               showLabels={showLabels}
               enableSymmetry={enableSymmetry}
             />
@@ -138,6 +139,7 @@ export default function App() {
             {/* {JSON.stringify(palette)} */}
             {palette.map((color, index) => (
               <PaletteColor
+              color={color}
                 currentColor={currentColor}
                 setCurrentColor={setCurrentColor}
                 key={index}

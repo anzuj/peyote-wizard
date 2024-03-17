@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Box } from "@mui/material";
 import { getContrastColor } from "../helpers";
 
+const swapDirection = (str) =>
+  str.replace(/left|right/g, (match) => (match === "left" ? "right" : "left"));
+
 export default function BeadRow({
   enableSymmetry,
   showLabels,
@@ -71,12 +74,10 @@ export default function BeadRow({
 
     if (enableSymmetry) {
       const clickedBeadId = bead.id; //for example "row3-right4"
-      const swapDirection = (str) =>
-        str.replace(/left|right/g, (match) => (match === "left" ? "right" : "left"));
 
       const oppositeBeadId = swapDirection(clickedBeadId);
-      console.log("clickedBeadId: " + clickedBeadId);
-      console.log("oppositeBeadId: " + oppositeBeadId);
+      // console.log("clickedBeadId: " + clickedBeadId);
+      // console.log("oppositeBeadId: " + oppositeBeadId);
       const oppositeBead = document.getElementById(oppositeBeadId);
       if (oppositeBead) {
         // Update opposite bead's background color
@@ -90,22 +91,66 @@ export default function BeadRow({
     }
   };
 
-  const beadLabel = (color) => {
-    // if(enableSymmetry){
-
-    // }
-
-    if (!color || !showLabels) {
-      return "";
-    } else {
-      const colorInPalette = palette.find((p) => p.colorCode === color);
-      if (colorInPalette) {
-        console.log("color in palette");
-        return colorInPalette.label;
-      } else {
-        return "";
-      }
+  const beadLabel = (bead) => {
+    let label = "";
+    if(bead.color === "transparent") return label;
+    const colorInPalette = palette.find((p) => p.colorCode === bead.color);
+    if (colorInPalette) {
+      console.log("LABEL FOUND IN PALETTE " + colorInPalette.label)
+      label = colorInPalette.label;
     }
+    if(label && enableSymmetry){
+      const oppositeBeadId = swapDirection(bead.id);
+     const oppositeBeadColor =  document.getElementById(oppositeBeadId).style.backgroundColor
+     console.log("oppositeBeadColor: " + oppositeBeadColor);
+    }
+
+    //retrieve label for opposite bead
+//     if (enableSymmetry) {
+
+// const currentBeadText = document.getElementById(bead.id).innerText;
+// console.log("currentBeadText: " + currentBeadText);
+
+//       const oppositeBeadId = swapDirection(bead.id);
+//       console.log("beadLabel current Bead " + bead.id);
+//       console.log("beadLAbel oppositeBead: " + oppositeBeadId);
+//       const oppositeBead = document.getElementById(oppositeBeadId);
+//       if (oppositeBead !== null) {
+//         console.log("oppositeBead innertext: " + oppositeBead.innerText);
+//         label = oppositeBead.innerText
+//         // const oppositeBeadColor = oppositeBead.style.backgroundColor;
+
+//         // const colorInPalette = palette.find((p) => p.colorCode === oppositeBeadColor);
+//         // if (colorInPalette) {
+//         //   console.log("color in palette");
+//         //   label = colorInPalette.label;
+//         // }
+//       }
+//     }
+
+    return label;
+  };
+
+  const beadLabel2 = (beadId) => {
+    // console.log("beadLabel2 beadId: " + beadId)
+    let label = "";
+const currentBead = document.getElementById(beadId);
+if(currentBead){
+  const currentBeadBg = currentBead.style.backgroundColor;
+  // console.log("currentBeadBg: " + currentBeadBg);
+  if(currentBeadBg == "transparent") {
+    return label
+  }else{
+    console.log("checking palette for " + currentBeadBg)
+    const colorInPalette = palette.find((p) => p.colorCode === currentBeadBg);
+    if (colorInPalette) {
+      console.log("LABEL FOUND IN PALETTE " + colorInPalette.label)
+      label = colorInPalette.label;
+    }
+  }
+}
+
+    return label;
   };
 
   return (
@@ -123,7 +168,8 @@ export default function BeadRow({
             onClick={() => handleBeadClick(bead)}
           >
             {/* {beadColor} */}
-            {beadLabel(bead.color)}
+            {/* {showLabels && beadLabel(bead)} */}
+            {showLabels && beadLabel2(bead.id)}
           </div>
         );
       })}
