@@ -105,7 +105,7 @@ export default function App() {
               palette={palette}
               startCount={sideCount}
               direction={"left"}
-              color={currentColor.colorCode}
+              color={currentColor}
               showLabels={showLabels}
               enableSymmetry={enableSymmetry}
             />
@@ -115,7 +115,7 @@ export default function App() {
               palette={palette}
               startCount={sideCount}
               direction={"right"}
-              color={currentColor.colorCode}
+              color={currentColor}
               showLabels={showLabels}
               enableSymmetry={enableSymmetry}
             />

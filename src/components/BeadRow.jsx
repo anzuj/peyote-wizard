@@ -12,7 +12,7 @@ export default function BeadRow({
   row,
   count,
   offset,
-  color,
+  currentColor,
   direction,
 }) {
   const [beads, setBeads] = useState(generateInitialBeads(count));
@@ -42,6 +42,16 @@ export default function BeadRow({
 
   const handleBeadClick = (bead) => {
     const clickedBead = document.getElementById(bead.id);
+    let newColor = currentColor.colorCode;
+    const currentBeadColor = clickedBead.style.backgroundColor;
+    if (currentBeadColor === newColor) {
+      newColor = "transparent";
+    }
+
+    clickedBead.setAttribute("data-label", currentColor.label);
+    clickedBead.setAttribute("data-color", newColor);
+    clickedBead.innerText =  newColor !== "transparent" ? currentColor.label : "";
+    // const oppositeBead = document.getElementById.swapDirection(bead.id);
 
     /*     if (clickedBead) {
       // Update its background color
@@ -70,7 +80,7 @@ export default function BeadRow({
       }
     }
  */
-    setBeads((existingBeads) => updateBeads(color, existingBeads, bead.index));
+    setBeads((existingBeads) => updateBeads(newColor, existingBeads, bead.index));
 
     if (enableSymmetry) {
       const clickedBeadId = bead.id; //for example "row3-right4"
@@ -82,75 +92,71 @@ export default function BeadRow({
       if (oppositeBead) {
         // Update opposite bead's background color
         const currentOppositeColor = oppositeBead.style.backgroundColor;
-        let newOppositeColor = color;
-        if (currentOppositeColor === color) {
+        let newOppositeColor = currentColor.colorCode;
+        if (currentOppositeColor === newOppositeColor) {
           newOppositeColor = "transparent";
         }
         oppositeBead.style.backgroundColor = newOppositeColor;
+        oppositeBead.setAttribute("data-label", currentColor.label);
+        oppositeBead.setAttribute("data-color", newOppositeColor);
+        oppositeBead.innerText =  newOppositeColor !== "transparent" ? currentColor.label : "";
+        oppositeBead.style.color = getContrastColor(newOppositeColor)
       }
     }
   };
 
   const beadLabel = (bead) => {
     let label = "";
-    if(bead.color === "transparent") return label;
+    if (bead.color === "transparent") return label;
     const colorInPalette = palette.find((p) => p.colorCode === bead.color);
     if (colorInPalette) {
-      console.log("LABEL FOUND IN PALETTE " + colorInPalette.label)
+      console.log("LABEL FOUND IN PALETTE " + colorInPalette.label);
       label = colorInPalette.label;
     }
-    if(label && enableSymmetry){
+    if (label && enableSymmetry) {
       const oppositeBeadId = swapDirection(bead.id);
-     const oppositeBeadColor =  document.getElementById(oppositeBeadId).style.backgroundColor
-     console.log("oppositeBeadColor: " + oppositeBeadColor);
+      const oppositeBeadColor = document.getElementById(oppositeBeadId).style.backgroundColor;
+      console.log("oppositeBeadColor: " + oppositeBeadColor);
     }
 
     //retrieve label for opposite bead
-//     if (enableSymmetry) {
+    //     if (enableSymmetry) {
 
-// const currentBeadText = document.getElementById(bead.id).innerText;
-// console.log("currentBeadText: " + currentBeadText);
+    // const currentBeadText = document.getElementById(bead.id).innerText;
+    // console.log("currentBeadText: " + currentBeadText);
 
-//       const oppositeBeadId = swapDirection(bead.id);
-//       console.log("beadLabel current Bead " + bead.id);
-//       console.log("beadLAbel oppositeBead: " + oppositeBeadId);
-//       const oppositeBead = document.getElementById(oppositeBeadId);
-//       if (oppositeBead !== null) {
-//         console.log("oppositeBead innertext: " + oppositeBead.innerText);
-//         label = oppositeBead.innerText
-//         // const oppositeBeadColor = oppositeBead.style.backgroundColor;
+    //       const oppositeBeadId = swapDirection(bead.id);
+    //       console.log("beadLabel current Bead " + bead.id);
+    //       console.log("beadLAbel oppositeBead: " + oppositeBeadId);
+    //       const oppositeBead = document.getElementById(oppositeBeadId);
+    //       if (oppositeBead !== null) {
+    //         console.log("oppositeBead innertext: " + oppositeBead.innerText);
+    //         label = oppositeBead.innerText
+    //         // const oppositeBeadColor = oppositeBead.style.backgroundColor;
 
-//         // const colorInPalette = palette.find((p) => p.colorCode === oppositeBeadColor);
-//         // if (colorInPalette) {
-//         //   console.log("color in palette");
-//         //   label = colorInPalette.label;
-//         // }
-//       }
-//     }
+    //         // const colorInPalette = palette.find((p) => p.colorCode === oppositeBeadColor);
+    //         // if (colorInPalette) {
+    //         //   console.log("color in palette");
+    //         //   label = colorInPalette.label;
+    //         // }
+    //       }
+    //     }
 
     return label;
   };
 
   const beadLabel2 = (beadId) => {
     // console.log("beadLabel2 beadId: " + beadId)
-    let label = "";
-const currentBead = document.getElementById(beadId);
-if(currentBead){
-  const currentBeadBg = currentBead.style.backgroundColor;
-  // console.log("currentBeadBg: " + currentBeadBg);
-  if(currentBeadBg == "transparent") {
-    return label
-  }else{
-    console.log("checking palette for " + currentBeadBg)
-    const colorInPalette = palette.find((p) => p.colorCode === currentBeadBg);
-    if (colorInPalette) {
-      console.log("LABEL FOUND IN PALETTE " + colorInPalette.label)
-      label = colorInPalette.label;
-    }
-  }
-}
 
-    return label;
+    const currentBead = document.getElementById(beadId);
+    if (currentBead) {
+      const dataLabel = currentBead.dataset.label;
+      console.log("beadLabel2 dataLabel: " + dataLabel);
+      // const dataLabel = currentBead.getAttribute("data-label");
+      return dataLabel;
+    }
+
+    // return label;
   };
 
   return (
@@ -169,7 +175,7 @@ if(currentBead){
           >
             {/* {beadColor} */}
             {/* {showLabels && beadLabel(bead)} */}
-            {showLabels && beadLabel2(bead.id)}
+            {/* {showLabels && beadLabel2(bead.id)} */}
           </div>
         );
       })}
